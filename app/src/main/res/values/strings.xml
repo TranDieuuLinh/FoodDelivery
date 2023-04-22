@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">test</string>
+    <string name="pepperoni_pizza">slices pepperoni, mozzerella cheese, fresh oregano, ground black pepper, pizza sauce</string>
+    <string name="beef_burger">beef, Gouda Cheese, Special Sauce, Lettuce, Tomato</string>
+    <string name="cheese_pizza">olive oil, Vegetable oil, pitted kalamata, cherry tomatoes, fresh oregano, basil</string>
+    <string name="title_activity_maps">MapsActivity</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+</resources>

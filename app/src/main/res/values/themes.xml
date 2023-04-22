@@ -1,0 +1,20 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <!-- Base application theme. -->
+    <style name="Theme.Test" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+        <!-- Primary brand color. -->
+        <item name="colorPrimary">#FECA64</item>
+        <item name="colorPrimaryVariant">#FF9800</item>
+        <item name="colorOnPrimary">#000</item>
+        <!-- Customize your theme here. -->
+        <item name="actionBarStyle">@style/MyActionBar</item>
+
+    </style>
+
+    <!-- ActionBar styles -->
+    <style name="MyActionBar" parent="Widget.AppCompat.Toolbar">
+
+        <!-- Support library compatibility -->
+        <item name="contentInsetStart">0dp</item>
+        <item name="android:background">#FECA64</item>
+    </style>
+</resources>
