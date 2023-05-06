@@ -1,34 +1,34 @@
 {
   "project_info": {
-    "project_number": "621553801574",
-    "firebase_url": "https://test-17841-default-rtdb.asia-southeast1.firebasedatabase.app",
-    "project_id": "test-17841",
-    "storage_bucket": "test-17841.appspot.com"
+    "project_number": "943501844712",
+    "firebase_url": "https://foodtest-9a79b-default-rtdb.asia-southeast1.firebasedatabase.app",
+    "project_id": "foodtest-9a79b",
+    "storage_bucket": "foodtest-9a79b.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:621553801574:android:72c679430fadcf84f050a7",
+        "mobilesdk_app_id": "1:943501844712:android:1248dbd8da57b58478a95d",
         "android_client_info": {
           "package_name": "com.example.test"
         }
       },
       "oauth_client": [
         {
-          "client_id": "621553801574-en3t7lh2nljqb3qqdbjl78ks1jti542p.apps.googleusercontent.com",
+          "client_id": "943501844712-0dvlcmn2u0r5f4h156grl6b49lp2ms1n.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyA6DbQsmXkLwfHYc6BVACEvrzVTF-lAz44"
+          "current_key": "AIzaSyC3pIsDb8pt_36cAEb8iN15Nn8S_Lvng8U"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "621553801574-en3t7lh2nljqb3qqdbjl78ks1jti542p.apps.googleusercontent.com",
+              "client_id": "943501844712-0dvlcmn2u0r5f4h156grl6b49lp2ms1n.apps.googleusercontent.com",
               "client_type": 3
             }
           ]

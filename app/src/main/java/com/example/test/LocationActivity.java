@@ -89,7 +89,7 @@ public class LocationActivity extends FragmentActivity implements OnMapReadyCall
             workerLocation = savedInstanceState.getString("workerLocation");
 
             GeoApiContext context = new GeoApiContext.Builder()
-                    .apiKey("AIzaSyCt0I6k3QLaB3XQrNZE9uAae6kXKnoLg4M")
+                    .apiKey("AIzaSyC3pIsDb8pt_36cAEb8iN15Nn8S_Lvng8U")
                     .build();
             DirectionsResult directionsResult;
             try {
@@ -281,18 +281,13 @@ public class LocationActivity extends FragmentActivity implements OnMapReadyCall
         }
 
         mMap.setMyLocationEnabled(true);
-        LocationListener locationListener = new LocationListener() {
-            @Override
-            public void onLocationChanged(Location location) {
-                // Update onStartLocation variable
-                Location onStartLocation = location;
-                LatLng latLng1 = new LatLng(onStartLocation.getLatitude(), onStartLocation.getLongitude());
-                mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng1,20f));
-            }
+        LocationListener locationListener = location -> {
+            // Update onStartLocation variable
+            Location onStartLocation = location;
+            LatLng latLng1 = new LatLng(onStartLocation.getLatitude(), onStartLocation.getLongitude());
+            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng1,20f));
         };
 
-        LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, locationListener);
         mMap.setOnMyLocationButtonClickListener(() -> {
             Location myLocation = mMap.getMyLocation();
             LatLng latLng = new LatLng(myLocation.getLatitude(),myLocation.getLongitude());

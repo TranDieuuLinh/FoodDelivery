@@ -6,6 +6,7 @@ import androidx.core.content.ContextCompat;
 import androidx.fragment.app.FragmentActivity;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.location.Address;
@@ -13,6 +14,7 @@ import android.location.Geocoder;
 import android.location.Location;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Parcelable;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -23,7 +25,6 @@ import android.widget.Toast;
 import com.example.test.Databse.DataAddressChild;
 import com.example.test.Databse.WorkerOrderHelper;
 import com.example.test.databinding.ActivityWorkerMapBinding;
-import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -31,11 +32,15 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.maps.DirectionsApi;
 import com.google.maps.GeoApiContext;
+import com.google.maps.errors.ApiException;
 import com.google.maps.model.DirectionsResult;
 import com.google.maps.model.TravelMode;
+
+import org.parceler.Parcels;
 
 import java.io.IOException;
 import java.util.List;
@@ -53,6 +58,7 @@ public class WorkerMapActivity extends FragmentActivity implements OnMapReadyCal
     private View mapView;
     private String emailPosition, userAddressString,workerAddressString;
     private WorkerOrderHelper mWorkerOrderHelper;
+    private Polyline routePolyline;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,7 +67,9 @@ public class WorkerMapActivity extends FragmentActivity implements OnMapReadyCal
         setContentView(binding.getRoot());
 
         initView();
+
         handleUserPlaceOrderPos();
+
 
 
         getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
@@ -69,11 +77,48 @@ public class WorkerMapActivity extends FragmentActivity implements OnMapReadyCal
 
 
         backBtnWorkerMap.setOnClickListener(view -> {
+            mHandler.removeCallbacks(mRunnable);
             Intent intent = new Intent(this,WorkerMainActivity.class);
             startActivity(intent);
         });
 
 
+    }
+
+
+    public void onResume() {
+        super.onResume();
+        SharedPreferences prefs = getSharedPreferences("my_prefs", MODE_PRIVATE);
+        String originLatLngStr = prefs.getString("origin_latlng", null);
+        String destLatLngStr = prefs.getString("destination_latlng", null);
+        if (mMap != null && originLatLngStr != null && destLatLngStr != null) {
+            GeoApiContext context = new GeoApiContext.Builder()
+                    .apiKey("AIzaSyC3pIsDb8pt_36cAEb8iN15Nn8S_Lvng8U")
+                    .build();
+            DirectionsResult directionsResult;
+            try {
+                directionsResult = DirectionsApi.newRequest(context)
+                        .mode(TravelMode.DRIVING)
+                        .origin(originLatLngStr)
+                        .destination(destLatLngStr)
+                        .await();
+
+                List<LatLng> path = new PolylineOptions().getPoints();
+                for (com.google.maps.model.LatLng latLng : directionsResult.routes[0].overviewPolyline.decodePath()) {
+                    path.add(new LatLng(latLng.lat, latLng.lng));
+                }
+
+                mMap.addMarker(new MarkerOptions().position(path.get(0)).title(originLatLngStr));
+                mMap.addMarker(new MarkerOptions().position(path.get(path.size() - 1)).title(destLatLngStr));
+                routePolyline =  mMap.addPolyline(new PolylineOptions().addAll(path));
+
+                mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(path.get(0), 15));
+            } catch (InterruptedException | IOException | ApiException e) {
+                e.printStackTrace();
+            }
+
+
+        }
     }
 
     private void initView() {
@@ -90,6 +135,7 @@ public class WorkerMapActivity extends FragmentActivity implements OnMapReadyCal
         emailPosition = getIntent().getStringExtra("emailPosition");
 
     }
+
 
     @Override
     public void onMapReady(@NonNull GoogleMap googleMap) {
@@ -135,6 +181,12 @@ public class WorkerMapActivity extends FragmentActivity implements OnMapReadyCal
                                     .destination(userAddressString)
                                     .await();
 
+                            SharedPreferences prefs = getSharedPreferences("my_prefs", MODE_PRIVATE);
+                            SharedPreferences.Editor editor = prefs.edit();
+                            editor.putString("origin_latlng", workerAddressString);
+                            editor.putString("destination_latlng", userAddressString);
+                            editor.apply();
+
                             List<LatLng> path = new PolylineOptions().getPoints();
                             for (com.google.maps.model.LatLng latLng1 : directionsResult.routes[0].overviewPolyline.decodePath()) {
                                 path.add(new LatLng(latLng1.lat, latLng1.lng));
@@ -142,7 +194,7 @@ public class WorkerMapActivity extends FragmentActivity implements OnMapReadyCal
 
 
                             mMap.addMarker(new MarkerOptions().position(path.get(path.size() - 1)).title(userAddressString));
-                            mMap.addPolyline(new PolylineOptions().addAll(path));
+                            routePolyline = mMap.addPolyline(new PolylineOptions().addAll(path));
 
                             mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(path.get(0), 20));
 
